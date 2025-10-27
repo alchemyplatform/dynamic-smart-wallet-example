@@ -1,4 +1,5 @@
 import { useAlchemySmartWalletClient } from "@/hooks/use-alchemy-smart-wallet";
+import { arbitrumSepolia } from "@account-kit/infra";
 import { createSmartWalletClient } from "@account-kit/wallet-client";
 import { useState } from "react";
 import { ActivityIndicator, Button, View } from "react-native";
@@ -12,6 +13,7 @@ export const AlchemySmartWalletDemo = ({
   signer,
 }: AlchemySmartWalletDemoProps) => {
   const { client, account, isLoading } = useAlchemySmartWalletClient({
+    chain: arbitrumSepolia,
     signer,
   });
   const [isSending, setIsSending] = useState(false);

@@ -1,13 +1,16 @@
+import { raise } from "@/lib/utils";
 import { alchemy, arbitrumSepolia } from "@account-kit/infra";
 import { createSmartWalletClient } from "@account-kit/wallet-client";
 import { useEffect, useState } from "react";
-import { Address } from "viem";
+import { Address, Chain } from "viem";
 
 type UseAlchemySmartWalletClientParams = {
+  chain: Chain;
   signer: Parameters<typeof createSmartWalletClient>[0]["signer"];
 };
 
 export const useAlchemySmartWalletClient = ({
+  chain,
   signer,
 }: UseAlchemySmartWalletClientParams) => {
   const [isLoading, setIsLoading] = useState(true);
@@ -16,9 +19,15 @@ export const useAlchemySmartWalletClient = ({
   const [client] = useState(() =>
     createSmartWalletClient({
       signer,
-      transport: alchemy({ apiKey: process.env.EXPO_PUBLIC_ALCHEMY_API_KEY! }),
+      transport: alchemy({
+        apiKey:
+          process.env.EXPO_PUBLIC_ALCHEMY_API_KEY ??
+          raise("EXPO_PUBLIC_ALCHEMY_API_KEY is not defined"),
+      }),
       chain: arbitrumSepolia,
-      policyId: process.env.EXPO_PUBLIC_ALCHEMY_POLICY_ID!,
+      policyId:
+        process.env.EXPO_PUBLIC_ALCHEMY_POLICY_ID ??
+        raise("EXPO_PUBLIC_ALCHEMY_POLICY_ID is not defined"),
     }),
   );
 
