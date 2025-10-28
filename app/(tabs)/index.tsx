@@ -11,7 +11,7 @@ import { Image } from "expo-image";
 import { StyleSheet } from "react-native";
 
 export default function HomeScreen() {
-  const { isLoggedIn, signer } = useDynamicSmartAccountSigner();
+  const { isLoggedIn, address, signer } = useDynamicSmartAccountSigner();
 
   return (
     <>
@@ -28,7 +28,9 @@ export default function HomeScreen() {
         <ThemedView style={styles.stepContainer}>
           <ThemedText type="subtitle">Wallet</ThemedText>
           {!isLoggedIn ? <EmailSignIn /> : <DynamicWalletInfo />}
-          {signer && <AlchemySmartWalletDemo signer={signer} />}
+          {signer && address && (
+            <AlchemySmartWalletDemo account={address} signer={signer} />
+          )}
         </ThemedView>
       </ParallaxScrollView>
     </>

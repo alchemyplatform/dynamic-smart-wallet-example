@@ -32,7 +32,7 @@ export const EmailSignIn = () => {
         <View>
           <TextInput
             value={email}
-            onChangeText={setEmail}
+            onChangeText={(text) => setEmail(text.trim())}
             placeholder="Enter your email"
             autoFocus
             keyboardType="email-address"
@@ -44,7 +44,7 @@ export const EmailSignIn = () => {
         <View>
           <TextInput
             value={otp}
-            onChangeText={setOtp}
+            onChangeText={(text) => setOtp(text.trim())}
             placeholder="Enter OTP"
             autoFocus
             keyboardType="number-pad"

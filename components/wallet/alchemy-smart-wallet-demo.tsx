@@ -3,18 +3,21 @@ import { arbitrumSepolia } from "@account-kit/infra";
 import { createSmartWalletClient } from "@account-kit/wallet-client";
 import { useState } from "react";
 import { ActivityIndicator, Button, View } from "react-native";
-import { zeroAddress } from "viem";
+import { Address, zeroAddress } from "viem";
 
 type AlchemySmartWalletDemoProps = {
   signer: Parameters<typeof createSmartWalletClient>[0]["signer"];
+  account: Address;
 };
 
 export const AlchemySmartWalletDemo = ({
   signer,
+  account,
 }: AlchemySmartWalletDemoProps) => {
-  const { client, account, isLoading } = useAlchemySmartWalletClient({
+  const { client } = useAlchemySmartWalletClient({
     chain: arbitrumSepolia,
     signer,
+    address: account,
   });
   const [isSending, setIsSending] = useState(false);
 
@@ -26,7 +29,6 @@ export const AlchemySmartWalletDemo = ({
       const {
         preparedCallIds: [callId],
       } = await client.sendCalls({
-        from: account,
         calls: [
           {
             to: zeroAddress,
@@ -34,6 +36,9 @@ export const AlchemySmartWalletDemo = ({
             value: "0x0",
           },
         ],
+        capabilities: {
+          eip7702Auth: true,
+        },
       });
       console.log("Sent call, id:", callId);
       const status = await client.waitForCallsStatus({
@@ -46,20 +51,12 @@ export const AlchemySmartWalletDemo = ({
     }
   };
 
-  if (isLoading) {
-    return (
-      <View>
-        <ActivityIndicator size="large" style={{ marginVertical: 10 }} />
-      </View>
-    );
-  }
-
   return (
     <View>
       {isSending ? (
         <ActivityIndicator size="large" style={{ marginVertical: 10 }} />
       ) : (
-        <Button onPress={handleSend} title="Send call" disabled={!account} />
+        <Button onPress={handleSend} title="Send call" />
       )}
     </View>
   );
